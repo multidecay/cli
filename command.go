@@ -5,29 +5,31 @@ import (
 	"strings"
 )
 
-func runCmd(args []string, app *App, flagSet *flag.FlagSet) error {
+func runCmd(args []string, app *App, flagSet *flag.FlagSet) (cmdName string, err error) {
 	if len(flagSet.Args()) == 0 {
-		return ErrNoCommandProvided
+		return "", ErrNoCommandProvided
 	}
 
 	// Find the deepest subcommand
 	cmd, cmdName := findCommand(&Command{Name: app.Name, Subcommands: app.Commands}, flagSet.Args())
 
 	if cmdName != "" {
-		return ErrCommandNotFound(cmdName)
+		err = ErrCommandNotFound(cmdName)
+		return
 	}
 
 	// Check if --help flag is provided
 	for _, arg := range flagSet.Args() {
 		if arg == "--help" || arg == "-h" {
-			err := printHelp(app, cmd)
-			return err
+			err = printHelp(app, cmd)
+			return
 		}
 	}
 
 	// if subcommand not found, action will be empty.
 	if cmd.Action == nil {
-		return ErrCommandNotRegistered(cmdName)
+		err = ErrCommandNotRegistered(cmdName)
+		return
 	}
 
 	for _, flag := range cmd.Flags {
@@ -44,7 +46,7 @@ func runCmd(args []string, app *App, flagSet *flag.FlagSet) error {
 		Args:  flagSet.Args(),
 		Flags: parseFlags(flagSet, cmd.Flags),
 	})
-	return nil
+	return
 }
 
 func findCommand(cmd *Command, args []string) (*Command, string) {

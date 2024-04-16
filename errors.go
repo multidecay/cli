@@ -6,7 +6,7 @@ import "fmt"
 var (
 	ErrNoCommandProvided    = fmt.Errorf("no command provided")
 	ErrAppActionNotProvided = fmt.Errorf("app action not provided")
-	ErrParsingHelpTemplate  = fmt.Errorf("Error parsing help template")
+	ErrParsingHelpTemplate  = fmt.Errorf("error parsing help template")
 )
 
 func ErrFlagNotFound(flag string) error {
@@ -14,9 +14,9 @@ func ErrFlagNotFound(flag string) error {
 }
 
 func ErrCommandNotRegistered(command string) error {
-	return fmt.Errorf("Command %s not registered", command)
+	return fmt.Errorf("command action of %s not registered", command)
 }
 
 func ErrCommandNotFound(command string) error {
-	return fmt.Errorf("Command %s not found", command)
+	return fmt.Errorf("command %s not found", command)
 }

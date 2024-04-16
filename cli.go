@@ -76,8 +76,13 @@ func (app *App) Run(args []string) (err error) {
 			}
 		}
 		if !strings.HasPrefix(args[1], "-") && app.Commands != nil {
-			err := runCmd(args, app, flagSet)
+			cmdName, err := runCmd(args, app, flagSet)
+
 			if err != nil {
+				// Warn: errors.Is not working
+				if err.Error() == ErrCommandNotFound(cmdName).Error() {
+					return runApp(args, app, flagSet)
+				}
 				return err
 			}
 		}
@@ -111,7 +116,7 @@ func runApp(args []string, app *App, flagSet *flag.FlagSet) (err error) {
 	}
 
 	app.Action(Context{
-		Args:  flag.Args(),
+		Args:  flagSet.Args(),
 		Flags: parseFlags(flagSet, app.Flags),
 	})
 	return

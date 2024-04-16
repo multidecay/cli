@@ -19,7 +19,8 @@ func main() {
 		Name:  "moe",
 		Flags: appFlag,
 		Action: func(ctx cli.Context) {
-			fmt.Println("flag : ", ctx.String().Get("m"))
+			fmt.Println("flag m : ", ctx.String().Get("m"))
+			fmt.Println("flags: ", ctx.Args.Slice())
 		},
 	}
 	cmdAlias := []string{"r", "rnu", "nur"}
@@ -48,5 +49,8 @@ func main() {
 	// if need more, just create new cli.Command
 	// then app.AddCommand it
 
-	app.Run(os.Args)
+	err := app.Run(os.Args)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
